@@ -1,0 +1,32 @@
+{
+  "x_min": -1.5588231086730957,
+  "x_max": 1.5569969415664673,
+  "y_min": -1.1310019493103027,
+  "y_max": 1.1178452968597412,
+  "z_min": -0.8517134785652161,
+  "z_max": 0.8481190800666809,
+  "center": [
+    -0.000913083553314209,
+    -0.006578326225280762,
+    -0.0017971992492675781
+  ],
+  "size": [
+    3.115820050239563,
+    2.248847246170044,
+    1.699832558631897
+  ],
+  "visor": 0,
+  "zoomMax": 12,
+  "zoomMin": 4.5,
+  "zoomSensitivityMouse": 2,
+  "zoomSensitivityTouch": 1,
+  "habilitarZoom": 1,
+  "dragSensitivity": 1,
+  "minPitchAngle": 30,
+  "maxPitchAngle": 10,
+  "maxTranslateX": 0.5,
+  "minTranslateX": -0.5,
+  "maxTranslateY": 0.5,
+  "minTranslateY": -0.5,
+  "girar": 1
+}
