@@ -71794,7 +71794,7 @@ class FlyController {
     collider = null;
     constructor() {
         this.controller = new FlyController$1();
-        this.controller.pitchRange = new Vec2(-10, 30);
+        this.controller.pitchRange = new Vec2(-extraData.maxPitchAngle, extraData.minPitchAngle);
         this.controller.rotateDamping = 0.97;
         this.controller.moveDamping = 0.97;
     }
@@ -72009,7 +72009,7 @@ class OrbitController {
     constructor() {
         this.controller = new OrbitController$1();
         this.controller.zoomRange = new Vec2(0.01, Infinity);
-        this.controller.pitchRange = new Vec2(-10, 30);
+        this.controller.pitchRange = new Vec2(-extraData.maxPitchAngle, extraData.minPitchAngle);
         this.controller.rotateDamping = 0.97;
         this.controller.moveDamping = 0.97;
         this.controller.zoomDamping = 0.97;
@@ -75210,6 +75210,8 @@ const initXr = (global) => {
 
 var version = "1.15.1";
 
+let extraData;
+
 const loadGsplat = async (app, config, progressCallback) => {
     const { contents, contentUrl, unified, aa } = config;
     const c = contents;
@@ -75351,6 +75353,8 @@ const initCanvas = (global) => {
 };
 const main = async (canvas, settingsJson, config) => {
     const { app, camera } = await createApp(canvas, config);
+    const extraDataUrl = config.contentUrl.replace(/\.sog(?:\?.*)?$/i, ".json");
+    extraData = await (await fetch(extraDataUrl)).json();
     // create events
     const events = new EventHandler();
     const state = observe(events, {
