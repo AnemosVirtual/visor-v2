@@ -725,10 +725,6 @@
                                 <span class="control-key">Left Mouse</span>
                             </div>
                             <div class="control-item">
-                                <span class="control-action">Pan</span>
-                                <span class="control-key">Right Mouse</span>
-                            </div>
-                            <div class="control-item">
                                 <span class="control-action">Zoom</span>
                                 <span class="control-key">Mouse Wheel</span>
                             </div>
@@ -762,10 +758,6 @@
                             <div class="control-item">
                                 <span class="control-action">Orbit</span>
                                 <span class="control-key">One Finger Drag</span>
-                            </div>
-                            <div class="control-item">
-                                <span class="control-action">Pan</span>
-                                <span class="control-key">Two Finger Drag</span>
                             </div>
                             <div class="control-item">
                                 <span class="control-action">Zoom</span>
@@ -72402,7 +72394,6 @@ class Picker {
 
 /* Vec initialisation to avoid recurrent memory allocation */
 const tmpV1 = new Vec3();
-const tmpV2 = new Vec3();
 const mouseRotate = new Vec3();
 const flyMove = new Vec3();
 const pinchMove = new Vec3();
@@ -72410,40 +72401,7 @@ const orbitRotate = new Vec3();
 const flyRotate = new Vec3();
 const stickMove = new Vec3();
 const stickRotate = new Vec3();
-/**
- * Converts screen space mouse deltas to world space pan vector.
- *
- * @param camera - The camera component.
- * @param dx - The mouse delta x value.
- * @param dy - The mouse delta y value.
- * @param dz - The world space zoom delta value.
- * @param out - The output vector to store the pan result.
- * @returns - The pan vector in world space.
- * @private
- */
-const screenToWorld = (camera, dx, dy, dz, out = new Vec3()) => {
-    const { system, fov, aspectRatio, horizontalFov, projection, orthoHeight } = camera;
-    const { width, height } = system.app.graphicsDevice.clientRect;
-    // normalize deltas to device coord space
-    out.set(-(dx / width) * 2, (dy / height) * 2, 0);
-    // calculate half size of the view frustum at the current distance
-    const halfSize = tmpV2.set(0, 0, 0);
-    if (projection === PROJECTION_PERSPECTIVE) {
-        const halfSlice = dz * Math.tan(0.5 * fov * math.DEG_TO_RAD);
-        if (horizontalFov) {
-            halfSize.set(halfSlice, halfSlice / aspectRatio, 0);
-        }
-        else {
-            halfSize.set(halfSlice * aspectRatio, halfSlice, 0);
-        }
-    }
-    else {
-        halfSize.set(orthoHeight * aspectRatio, orthoHeight, 0);
-    }
-    // scale by device coord space
-    out.mul(halfSize);
-    return out;
-};
+
 // patch keydown and keyup to ignore events with meta key otherwise
 // keys can get stuck on macOS.
 const patchKeyboardMeta = (desktopInput) => {
@@ -72625,7 +72583,6 @@ class InputController {
         const orbit = +(state.cameraMode === 'orbit');
         const fly = +isFirstPerson;
         const double = +(this._state.touches > 1);
-        const pan = this._state.mouse[2] || +(button[2] === -1) || double;
         const orbitFactor = fly ? camera.fov / 120 : 1;
         const { deltas } = this.frame;
         // desktop move
@@ -72641,8 +72598,6 @@ class InputController {
             // Pass jump signal as raw Y; FPS controller uses move[1] > 0 as boolean trigger
             v.y = this._state.jump > 0 ? 1 : 0;
         }
-        const panMove = screenToWorld(camera, mouse[0], mouse[1], distance);
-        v.add(panMove.mulScalar(pan));
         const wheelMove = new Vec3(0, 0, -wheel[0]);
         v.add(wheelMove.mulScalar(this.wheelSpeed * dt));
         // FIXME: need to flip z axis for orbit camera
@@ -72650,12 +72605,10 @@ class InputController {
         // desktop rotate
         v.set(0, 0, 0);
         mouseRotate.set(mouse[0], mouse[1], 0);
-        v.add(mouseRotate.mulScalar((1 - pan) * this.orbitSpeed * orbitFactor * dt));
+        v.add(mouseRotate.mulScalar(this.orbitSpeed * orbitFactor * dt));
         deltas.rotate.append([v.x, v.y, v.z]);
         // mobile move
         v.set(0, 0, 0);
-        const orbitMove = screenToWorld(camera, touch[0], touch[1], distance);
-        v.add(orbitMove.mulScalar(orbit * pan));
         // Use touch joystick values for fly movement (X = strafe, Y = forward/backward)
         flyMove.set(this._touchJoystickX, 0, -this._touchJoystickY);
         v.add(flyMove.mulScalar(fly * this.moveSpeed * dt));
@@ -72665,7 +72618,7 @@ class InputController {
         // mobile rotate
         v.set(0, 0, 0);
         orbitRotate.set(touch[0], touch[1], 0);
-        v.add(orbitRotate.mulScalar(orbit * (1 - pan) * this.orbitSpeed * dt));
+        v.add(orbitRotate.mulScalar(orbit * this.orbitSpeed * dt));
         // In fly mode, use any touch for look-around (joystick captures its own touches)
         // Exclude multi-touch (double) to avoid interference with pinch gestures
         // 1.25x sensitivity for touch look-around
