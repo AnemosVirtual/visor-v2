@@ -738,10 +738,6 @@
                                 <span class="control-action">Look Around</span>
                                 <span class="control-key">Left Mouse</span>
                             </div>
-                            <div class="control-item">
-                                <span class="control-action">Fly</span>
-                                <span class="control-key">W,S,A,D</span>
-                            </div>
                             <div class="control-spacer"></div>
                             <div class="control-item">
                                 <span class="control-action">Frame Scene</span>
@@ -772,10 +768,6 @@
                             <div class="control-item">
                                 <span class="control-action">Look Around</span>
                                 <span class="control-key">Touch on Right</span>
-                            </div>
-                            <div class="control-item">
-                                <span class="control-action">Fly</span>
-                                <span class="control-key">Touch on Left</span>
                             </div>
                         </div>
                     </div>
@@ -72470,39 +72462,6 @@ class InputController {
         canvas.addEventListener('pointermove', (event) => {
             events.fire('inputEvent', 'interact', event);
         });
-        // Detect double taps manually because iOS doesn't send dblclick events
-        const lastTap = { time: 0, x: 0, y: 0 };
-        canvas.addEventListener('pointerdown', (event) => {
-            const now = Date.now();
-            const delay = Math.max(0, now - lastTap.time);
-            if (delay < 300 &&
-                Math.abs(event.clientX - lastTap.x) < 8 &&
-                Math.abs(event.clientY - lastTap.y) < 8) {
-                events.fire('inputEvent', 'dblclick', event);
-                lastTap.time = 0;
-            }
-            else {
-                lastTap.time = now;
-                lastTap.x = event.clientX;
-                lastTap.y = event.clientY;
-            }
-        });
-        // Calculate pick location on double click
-        let picker = null;
-        events.on('inputEvent', async (eventName, event) => {
-            switch (eventName) {
-                case 'dblclick': {
-                    if (!picker) {
-                        picker = new Picker(app, camera);
-                    }
-                    const result = await picker.pick(event.offsetX / canvas.clientWidth, event.offsetY / canvas.clientHeight);
-                    if (result) {
-                        events.fire('pick', result);
-                    }
-                    break;
-                }
-            }
-        });
         // update input mode based on pointer event
         ['pointerdown', 'pointermove'].forEach((eventName) => {
             window.addEventListener(eventName, (event) => {
@@ -72567,7 +72526,7 @@ class InputController {
         const { state, events } = this.global;
         const { camera } = this.global.camera;
         // update state
-        this._state.axis.add(tmpV1.set((key[keyCode.D] - key[keyCode.A]) + (key[keyCode.RIGHT] - key[keyCode.LEFT]), (key[keyCode.E] - key[keyCode.Q]), (key[keyCode.W] - key[keyCode.S]) + (key[keyCode.UP] - key[keyCode.DOWN])));
+        this._state.axis.add(tmpV1.set((key[keyCode.RIGHT] - key[keyCode.LEFT]), 0, (key[keyCode.UP] - key[keyCode.DOWN])));
         this._state.jump += key[keyCode.SPACE];
         this._state.touches += count[0];
         for (let i = 0; i < button.length; i++) {
