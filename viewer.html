@@ -72070,7 +72070,7 @@ class CameraManager {
                 // use the first animTrack
                 return animTracks[0];
             }
-            else if (isObjectExperience) {
+            else if (isObjectExperience && Number(extraData?.girar) === 1) {
                 // create basic rotation animation if no anim track is specified
                 initial.calcFocusPoint(tmpv);
                 return createRotateTrack(initial.position, tmpv, initial.fov);

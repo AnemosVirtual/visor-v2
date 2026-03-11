@@ -1,4 +1,8 @@
-{
+{  
+  "minPitchAngle": 30, 
+  "maxPitchAngle": 10, 
+  "girar": 0,
+
   "x_min": -1.5588231086730957,
   "x_max": 1.5569969415664673,
   "y_min": -1.1310019493103027,
@@ -22,11 +26,8 @@
   "zoomSensitivityTouch": 1,
   "habilitarZoom": 1,
   "dragSensitivity": 1,
-  "minPitchAngle": 30,
-  "maxPitchAngle": 10,
   "maxTranslateX": 0.5,
   "minTranslateX": -0.5,
   "maxTranslateY": 0.5,
-  "minTranslateY": -0.5,
-  "girar": 1
+  "minTranslateY": -0.5
 }
