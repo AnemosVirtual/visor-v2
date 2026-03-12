@@ -161,7 +161,7 @@
 		const voxelUrl = url.searchParams.get('voxel');
 		const settingsUrl = url.searchParams.has('settings') ? url.searchParams.get('settings') : './settings.json';
 
-		const contentUrl = url.searchParams.has('content') ? `https://pub-69b1ea0f7bd74469a2e6f0a99f6a26b2.r2.dev/${url.searchParams.get('content')}.sog` : './scene.sog';
+		const contentUrl = url.searchParams.has('code') ? `https://pub-69b1ea0f7bd74469a2e6f0a99f6a26b2.r2.dev/${url.searchParams.get('code')}.sog` : './scene.sog';
 
 		const sseConfig = {
 			poster: posterUrl && createImage(posterUrl),

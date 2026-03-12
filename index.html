@@ -570,7 +570,7 @@
             const voxelUrl = url.searchParams.get('voxel');
             const settingsUrl = url.searchParams.has('settings') ? url.searchParams.get('settings') : './settings.json';
 			
-            const contentUrl = url.searchParams.has('content') ? url.searchParams.get('content') : './scene.sog';
+            const contentUrl = url.searchParams.has('code') ? url.searchParams.get('code') : './scene.sog';
 
             const sseConfig = {
                 poster: posterUrl && createImage(posterUrl),
